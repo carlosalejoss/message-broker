@@ -19,8 +19,10 @@ message-broker
 │                   │   ├── MessageBrokerRemote.java  # RMI Remote interface
 │                   │   └── MessageCallback.java      # Callback interface
 │                   └── examples
-│                       ├── Producer.java         # RMI Client (Producer)
-│                       └── Consumer.java         # RMI Client (Consumer)
+│                       ├── Admin.java                # Admin client for queue management
+│                       ├── Consumer.java             # RMI Client (Producer)
+│                       ├── MessageCallbackImpl.java  # Callback implementation
+│                       └── Producer.java             # RMI Client (Consumer)
 ├── pom.xml
 └── README.md
 ```
@@ -33,6 +35,8 @@ message-broker
 - **Message Publishing**: Send messages to specified queues
 - **Message Consumption**: Read messages using callbacks
 - **Thread Safety**: Synchronized queue operations
+- **Message Expiration**: Messages automatically expire after 5 minutes
+- **Round-Robin Distribution**: Messages are distributed evenly among consumers
 
 ## Getting Started
 
@@ -86,17 +90,18 @@ message-broker
 1. **MessageBroker**:
    - RMI server implementation
    - Manages queues and subscriptions
-   - Handles message distribution
+   - Handles message distribution in round-robin fashion
+   - Maintains queue state across connections
 
 2. **Queue**:
    - Thread-safe message storage
    - FIFO message ordering
-   - 5-minute message timeout
+   - Automatic message cleanup after 5 minutes
+   - Delivers pending messages to new subscribers
 
 3. **Interfaces**:
    - `MessageBrokerRemote`: RMI interface for broker operations
    - `MessageCallback`: Interface for message delivery callbacks
-   - `MessageCallbackImpl`: Implementation of the callback interface for consumers
 
 ## Usage Example
 
@@ -132,16 +137,18 @@ message-broker
    > - exampleQueue
 
    # Delete a queue
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete exampleQueue
-   > Queue 'exampleQueue' deleted successfully
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete (queueName)
+   > Queue '(queueName)' deleted successfully
    ```
 
 ## Important Notes
 
 - Start the Message Broker before any Producers or Consumers
 - Ensure network connectivity between components
-- Messages are distributed in real-time to all subscribed consumers
-- Messages timeout after 5 minutes if not consumed
+- Messages are distributed using round-robin between consumers
+- Messages are automatically removed after 5 minutes if not consumed
+- Messages are persisted in memory until consumed or expired
+- Consumers receive all pending messages when connecting
 
 ## Troubleshooting
 
@@ -156,14 +163,6 @@ Common issues and solutions:
    - Confirm Consumer is subscribed to the correct queue
    - Verify Producer is using the correct queue name
    - Check for exceptions in the broker logs
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
 
 ## License
 

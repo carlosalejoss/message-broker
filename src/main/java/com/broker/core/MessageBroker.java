@@ -47,6 +47,12 @@ public class MessageBroker extends UnicastRemoteObject implements MessageBrokerR
         List<MessageCallback> queueSubscribers = subscribers.get(queueName);
         if (queueSubscribers != null) {
             queueSubscribers.add(callback);
+            
+            // Entregar mensajes pendientes al nuevo suscriptor
+            Queue queue = queues.get(queueName);
+            if (queue != null) {
+                queue.deliverPendingMessages(callback);
+            }
         }
     }
 
@@ -80,6 +86,10 @@ public class MessageBroker extends UnicastRemoteObject implements MessageBrokerR
                 try {
                     // Send message to the selected consumer
                     callback.onMessage(message);
+                    Queue queue = queues.get(queueName);
+                    if (queue != null) {
+                        queue.getMessage(); // Remove the message after successful delivery
+                    }
                     
                     // Update index for next message
                     currentIndex = (currentIndex + 1) % queueSubscribers.size();

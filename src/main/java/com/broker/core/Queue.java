@@ -1,5 +1,7 @@
 package com.broker.core;
 
+import com.broker.interfaces.MessageCallback;
+import java.rmi.RemoteException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
@@ -29,6 +31,20 @@ public class Queue {
             wait(); // Wait until a message is available
         }
         return messages.removeFirst();
+    }
+
+    public synchronized void deliverPendingMessages(MessageCallback callback) {
+        Iterator<Message> iterator = messages.iterator();
+        while (iterator.hasNext()) {
+            Message message = iterator.next();
+            try {
+                callback.onMessage(message);
+                iterator.remove(); // Remove message after successful delivery
+                System.out.println("Delivered and removed message from queue " + name + ": " + message.getContent());
+            } catch (RemoteException e) {
+                System.err.println("Error delivering pending message: " + e.toString());
+            }
+        }
     }
 
     private void cleanupExpiredMessages() {

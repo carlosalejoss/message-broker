@@ -3,7 +3,7 @@ package com.broker.examples;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import com.broker.interfaces.MessageBrokerRemote;
-import com.broker.interfaces.MessageCallbackImpl;
+import com.broker.interfaces.MessageCallback;
 
 public class Consumer {
     private MessageBrokerRemote broker;
@@ -20,8 +20,8 @@ public class Consumer {
 
     public void startConsuming(String queueName) {
         try {
-            // Crear una clase interna que implementa MessageCallback y Serializable
-            broker.subscribe(queueName, new MessageCallbackImpl());
+            MessageCallback callback = new MessageCallbackImpl();
+            broker.subscribe(queueName, callback);
         } catch (Exception e) {
             System.err.println("Error subscribing: " + e.toString());
         }

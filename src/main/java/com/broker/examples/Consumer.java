@@ -1,23 +1,21 @@
 package com.broker.examples;
 
-import java.rmi.registry.Registry;
-import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.HashSet;
 import java.util.Set;
 import com.broker.interfaces.MessageBrokerRemote;
 import com.broker.interfaces.MessageCallback;
 
-public class Consumer {
-    private MessageBrokerRemote broker;
+public class Consumer extends UnicastRemoteObject {
     private Scanner scanner;
     private Set<String> subscribedQueues;
     private MessageCallback callback;
 
-    public Consumer() {
+    public Consumer() throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry(1099);
-            broker = (MessageBrokerRemote) registry.lookup("MessageBroker");
             scanner = new Scanner(System.in);
             subscribedQueues = new HashSet<>();
             callback = new MessageCallbackImpl();
@@ -27,7 +25,7 @@ public class Consumer {
         }
     }
 
-    public void subscribe() {
+    public void subscribe(MessageBrokerRemote broker) {
         try {
             System.out.print("Enter queue name to subscribe: ");
             String queueName = scanner.nextLine();
@@ -69,7 +67,7 @@ public class Consumer {
         }
     }
 
-    public void listQueues() {
+    public void listQueues(MessageBrokerRemote broker) {
         try {
             System.out.println("\nAvailable queues:");
             broker.listQueues().forEach(queue -> System.out.println("- " + queue));
@@ -78,7 +76,7 @@ public class Consumer {
         }
     }
 
-    public void showMenu() {
+    public void showMenu(MessageBrokerRemote broker) {
         while (true) {
             System.out.println("\n=== Consumer Menu ===");
             System.out.println("1. Subscribe to Queue");
@@ -91,13 +89,13 @@ public class Consumer {
             
             switch (option) {
                 case "1":
-                    subscribe();
+                    subscribe(broker);
                     break;
                 case "2":
                     unsubscribe();
                     break;
                 case "3":
-                    listQueues();
+                    listQueues(broker);
                     break;
                 case "4":
                     System.out.println("Exiting...");
@@ -109,7 +107,15 @@ public class Consumer {
     }
 
     public static void main(String[] args) {
-        Consumer consumer = new Consumer();
-        consumer.showMenu();
+        try {
+            String urlBroker = "rmi://" + args[0] + ":1099/MessageBroker";
+            Consumer consumer = new Consumer();
+            MessageBrokerRemote broker = (MessageBrokerRemote) Naming.lookup(urlBroker);
+            System.out.println("Consumer ready and bound to " + urlBroker);
+
+            consumer.showMenu(broker);
+        } catch (Exception e) {
+            System.err.println("Error initializing Consumer: " + e.toString());
+        }
     }
 }

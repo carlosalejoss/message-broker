@@ -1,27 +1,18 @@
 package com.broker.examples;
 
-import java.rmi.registry.Registry;
-import java.rmi.registry.LocateRegistry;
+import java.rmi.Naming;
 import java.util.Scanner;
 import com.broker.core.Message;
 import com.broker.interfaces.MessageBrokerRemote;
 
 public class Producer {
-    private MessageBrokerRemote broker;
     private Scanner scanner;
 
     public Producer() {
-        try {
-            Registry registry = LocateRegistry.getRegistry(1099);
-            broker = (MessageBrokerRemote) registry.lookup("MessageBroker");
-            scanner = new Scanner(System.in);
-        } catch (Exception e) {
-            System.err.println("Client exception: " + e.toString());
-            e.printStackTrace();
-        }
+        scanner = new Scanner(System.in);
     }
 
-    public void createQueue() {
+    public void createQueue(MessageBrokerRemote broker) {
         try {
             System.out.print("Enter queue name: ");
             String queueName = scanner.nextLine();
@@ -32,7 +23,7 @@ public class Producer {
         }
     }
 
-    public void sendMessage() {
+    public void sendMessage(MessageBrokerRemote broker) {
         try {
             System.out.print("Enter queue name: ");
             String queueName = scanner.nextLine();
@@ -47,7 +38,7 @@ public class Producer {
         }
     }
 
-    public void showMenu() {
+    public void showMenu(MessageBrokerRemote broker) {
         while (true) {
             System.out.println("\n=== Producer Menu ===");
             System.out.println("1. Create Queue");
@@ -59,10 +50,10 @@ public class Producer {
             
             switch (option) {
                 case "1":
-                    createQueue();
+                    createQueue(broker);
                     break;
                 case "2":
-                    sendMessage();
+                    sendMessage(broker);
                     break;
                 case "3":
                     System.out.println("Exiting...");
@@ -74,7 +65,15 @@ public class Producer {
     }
 
     public static void main(String[] args) {
-        Producer producer = new Producer();
-        producer.showMenu();
+        try {
+            String urlBroker = "rmi://" + args[0] + ":1099/MessageBroker";
+            Producer producer = new Producer();
+            MessageBrokerRemote broker = (MessageBrokerRemote) Naming.lookup(urlBroker);
+            System.out.println("Producer ready and bound to " + urlBroker);
+
+            producer.showMenu(broker);
+        } catch (Exception e) {
+            System.err.println("Error initializing Producer: " + e.toString());
+        }
     }
 }

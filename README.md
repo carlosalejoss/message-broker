@@ -115,7 +115,8 @@ message-broker
 2. **Start a Consumer**:
 
    ```bash
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Consumer
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Consumer <host>
+   > Consumer ready and bound to rmi://<host>:1099/MessageBroker
    > === Consumer Menu ===
    > 1. Subscribe to Queue
    > 2. Unsubscribe from Queue
@@ -127,7 +128,8 @@ message-broker
 3. **Run the Producer**:
 
    ```bash
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Producer
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Producer <host>
+   > Producer ready and bound to rmi://<host>:1099/MessageBroker
    > === Producer Menu ===
    > 1. Create Queue
    > 2. Send Message
@@ -139,7 +141,8 @@ message-broker
 
    ```bash
    # Delete a queue
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete <queueName>
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin <host> delete <queueName>
+   > Admin ready and bound to rmi://<host>:1099/MessageBroker
    > Queue '<queueName>' deleted successfully
    ```
 
@@ -152,6 +155,7 @@ message-broker
 - Messages are persisted in memory until consumed or expired
 - Consumers receive all pending messages when connecting
 - Queue listing functionality is available in the Consumer menu
+- Components can connect to remote brokers by specifying the hostname
 
 ## Troubleshooting
 
@@ -161,11 +165,14 @@ Common issues and solutions:
    - Ensure the Message Broker is running
    - Check if port 1099 is available
    - Verify network connectivity
+   - Make sure the hostname/IP is correct
+   - Check firewall settings
 
 2. **Messages Not Received**:
    - Confirm Consumer is subscribed to the correct queue
    - Verify Producer is using the correct queue name
    - Check for exceptions in the broker logs
+   - Ensure all componentes are connected to the same broker
 
 ## License
 

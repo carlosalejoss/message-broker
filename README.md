@@ -57,11 +57,9 @@ message-broker
    java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.core.MessageBroker
    ```
 
-   You should see: "Message Broker is running..."
-
 3. **Run Clients** (in separate terminals):
 
-   Start a Consumer:
+   Start a Consumer (multiple consumers can be started to observe round-robin message distribution):
 
    ```bash
    java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Consumer
@@ -97,6 +95,7 @@ message-broker
 3. **Interfaces**:
    - `MessageBrokerRemote`: RMI interface for broker operations
    - `MessageCallback`: Interface for message delivery callbacks
+   - `MessageCallbackImpl`: Implementation of the callback interface for consumers
 
 ## Usage Example
 

@@ -116,16 +116,22 @@ message-broker
 
    ```bash
    java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Consumer
-   > Starting to consume messages from queue: exampleQueue
+   > === Consumer Menu ===
+   > 1. Subscribe to Queue
+   > 2. Unsubscribe from Queue
+   > 3. Exit
+   > Select an option:
    ```
 
 3. **Run the Producer**:
 
    ```bash
    java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Producer
-   > Message sent to queue exampleQueue: Hello, World!
-   > Message sent to queue exampleQueue: Another message
-   > Message sent to queue exampleQueue: Third message
+   > === Producer Menu ===
+   > 1. Create Queue
+   > 2. Send Message
+   > 3. Exit
+   > Select an option:
    ```
 
 4. **Queue Management**:
@@ -137,8 +143,8 @@ message-broker
    > - exampleQueue
 
    # Delete a queue
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete (queueName)
-   > Queue '(queueName)' deleted successfully
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete <queueName>
+   > Queue '<queueName>' deleted successfully
    ```
 
 ## Important Notes

@@ -29,6 +29,7 @@ message-broker
 
 - **Distributed Architecture**: Uses Java RMI for communication between components
 - **Queue Declaration**: Create queues that can be used by producers and consumers
+- **Queue Management**: List and delete existing queues
 - **Message Publishing**: Send messages to specified queues
 - **Message Consumption**: Read messages using callbacks
 - **Thread Safety**: Synchronized queue operations
@@ -120,6 +121,19 @@ message-broker
    > Message sent to queue exampleQueue: Hello, World!
    > Message sent to queue exampleQueue: Another message
    > Message sent to queue exampleQueue: Third message
+   ```
+
+4. **Queue Management**:
+
+   ```bash
+   # List all queues
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin list
+   > Available queues:
+   > - exampleQueue
+
+   # Delete a queue
+   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete exampleQueue
+   > Queue 'exampleQueue' deleted successfully
    ```
 
 ## Important Notes

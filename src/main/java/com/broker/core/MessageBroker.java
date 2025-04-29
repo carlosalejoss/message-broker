@@ -50,6 +50,23 @@ public class MessageBroker extends UnicastRemoteObject implements MessageBrokerR
         }
     }
 
+    @Override
+    public synchronized List<String> listQueues() throws RemoteException {
+        return new ArrayList<>(queues.keySet());
+    }
+
+    @Override
+    public synchronized void deleteQueue(String name) throws RemoteException {
+        if (queues.containsKey(name)) {
+            queues.remove(name);
+            subscribers.remove(name);
+            currentConsumerIndex.remove(name);
+            System.out.println("Queue '" + name + "' deleted");
+        } else {
+            throw new RemoteException("Queue '" + name + "' does not exist");
+        }
+    }
+
     private void notifySubscribers(String queueName, Message message) {
         List<MessageCallback> queueSubscribers = subscribers.get(queueName);
         if (queueSubscribers != null && !queueSubscribers.isEmpty()) {

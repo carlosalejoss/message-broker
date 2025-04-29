@@ -14,6 +14,6 @@ public class MessageCallbackImpl extends UnicastRemoteObject implements MessageC
     
     @Override
     public void onMessage(Message message) throws RemoteException {
-        System.out.println("Consumer received message: " + message.getContent());
+        System.out.println("\nConsumer received message: " + message.getContent());
     }
 }

@@ -69,12 +69,22 @@ public class Consumer {
         }
     }
 
+    public void listQueues() {
+        try {
+            System.out.println("\nAvailable queues:");
+            broker.listQueues().forEach(queue -> System.out.println("- " + queue));
+        } catch (Exception e) {
+            System.err.println("Error listing queues: " + e.toString());
+        }
+    }
+
     public void showMenu() {
         while (true) {
             System.out.println("\n=== Consumer Menu ===");
             System.out.println("1. Subscribe to Queue");
             System.out.println("2. Unsubscribe from Queue");
-            System.out.println("3. Exit");
+            System.out.println("3. List Queues");
+            System.out.println("4. Exit");
             System.out.print("Select an option: ");
             
             String option = scanner.nextLine();
@@ -87,6 +97,9 @@ public class Consumer {
                     unsubscribe();
                     break;
                 case "3":
+                    listQueues();
+                    break;
+                case "4":
                     System.out.println("Exiting...");
                     return;
                 default:

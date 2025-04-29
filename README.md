@@ -119,7 +119,8 @@ message-broker
    > === Consumer Menu ===
    > 1. Subscribe to Queue
    > 2. Unsubscribe from Queue
-   > 3. Exit
+   > 3. List Queues
+   > 4. Exit
    > Select an option:
    ```
 
@@ -137,11 +138,6 @@ message-broker
 4. **Queue Management**:
 
    ```bash
-   # List all queues
-   java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin list
-   > Available queues:
-   > - exampleQueue
-
    # Delete a queue
    java -cp target/message-broker-1.0-SNAPSHOT.jar com.broker.examples.Admin delete <queueName>
    > Queue '<queueName>' deleted successfully
@@ -155,6 +151,7 @@ message-broker
 - Messages are automatically removed after 5 minutes if not consumed
 - Messages are persisted in memory until consumed or expired
 - Consumers receive all pending messages when connecting
+- Queue listing functionality is available in the Consumer menu
 
 ## Troubleshooting
 

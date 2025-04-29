@@ -46,7 +46,7 @@ message-broker
 1. **Clone and Build**:
 
    ```bash
-   git clone [<https://github.com/carlosalejoss/message-broker>]
+   git clone (https://github.com/carlosalejoss/message-broker)
    cd message-broker
    mvn clean install
    ```
